@@ -22,6 +22,7 @@ type KeyType = string
 
 const Sr25519Type KeyType = "sr25519"
 const Secp256k1Type KeyType = "secp256k1"
+const Ed25519Type KeyType = "ed25519"
 
 type Keypair interface {
 	// Encode is used to write the key to a file

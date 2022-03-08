@@ -15,6 +15,7 @@ import (
 	"syscall"
 
 	"github.com/ChainSafe/chainbridge-utils/crypto"
+	"github.com/ChainSafe/chainbridge-utils/crypto/ed25519"
 	"github.com/ChainSafe/chainbridge-utils/crypto/secp256k1"
 	sr25519 "github.com/ChainSafe/chainbridge-utils/crypto/sr25519"
 	"golang.org/x/crypto/blake2b"
@@ -82,6 +83,10 @@ func EncryptAndWriteToFile(file *os.File, kp crypto.Keypair, password []byte) er
 
 	if _, ok := kp.(*secp256k1.Keypair); ok {
 		keytype = crypto.Secp256k1Type
+	}
+
+	if _, ok := kp.(*ed25519.Keypair); ok {
+		keytype = crypto.Ed25519Type
 	}
 
 	if keytype == "" {

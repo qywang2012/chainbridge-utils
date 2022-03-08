@@ -8,7 +8,7 @@ require (
 	github.com/centrifuge/go-substrate-rpc-client v2.0.0-alpha.5+incompatible
 	github.com/ethereum/go-ethereum v1.9.17
 	github.com/golang/protobuf v1.3.3 // indirect
-	github.com/kr/pretty v0.2.0 // indirect
+	github.com/icpfans-xyz/agent-go v0.0.0-20220308103158-f618843cfb34
 	github.com/pierrec/xxHash v0.1.5 // indirect
 	github.com/prometheus/client_golang v1.4.1
 	github.com/prometheus/procfs v0.0.10 // indirect

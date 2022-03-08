@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/ChainSafe/chainbridge-utils/crypto"
+	"github.com/ChainSafe/chainbridge-utils/crypto/ed25519"
 	"github.com/ChainSafe/chainbridge-utils/crypto/secp256k1"
 	"github.com/ChainSafe/chainbridge-utils/crypto/sr25519"
 	"github.com/centrifuge/go-substrate-rpc-client/signature"
@@ -25,6 +26,7 @@ var Keys = []string{AliceKey, BobKey, CharlieKey, DaveKey, EveKey}
 // The Chain type Constants
 const EthChain = "ethereum"
 const SubChain = "substrate"
+const DftChain = "dfinity"
 
 var TestKeyRing *TestKeyRingHolder
 
@@ -62,6 +64,7 @@ var EveSr25519 = sr25519.NewKeypairFromKRP(signature.KeyringPair{
 type TestKeyRingHolder struct {
 	EthereumKeys  map[string]*secp256k1.Keypair
 	SubstrateKeys map[string]*sr25519.Keypair
+	DfinityKeys   map[string]*ed25519.Keypair
 }
 
 // Init function to create a keyRing that can be accessed anywhere without having to recreate the data
@@ -75,6 +78,7 @@ func init() {
 			DaveKey:    DaveSr25519,
 			EveKey:     EveSr25519,
 		},
+		DfinityKeys: makeDftRing(),
 	}
 
 }
@@ -84,6 +88,20 @@ func makeEthRing() map[string]*secp256k1.Keypair {
 	for _, key := range Keys {
 		bz := padWithZeros([]byte(key), secp256k1.PrivateKeyLength)
 		kp, err := secp256k1.NewKeypairFromPrivateKey(bz)
+		if err != nil {
+			panic(err)
+		}
+		ring[key] = kp
+	}
+
+	return ring
+}
+
+func makeDftRing() map[string]*ed25519.Keypair {
+	ring := map[string]*ed25519.Keypair{}
+	for _, key := range Keys {
+		bz := padWithZeros([]byte(key), ed25519.PrivateKeyLength)
+		kp, err := ed25519.NewKeypairFromPrivateKey(bz)
 		if err != nil {
 			panic(err)
 		}
@@ -108,6 +126,8 @@ func insecureKeypairFromAddress(key string, chainType string) (crypto.Keypair, e
 		kp, ok = TestKeyRing.EthereumKeys[key]
 	} else if chainType == SubChain {
 		kp, ok = TestKeyRing.SubstrateKeys[key]
+	} else if chainType == DftChain {
+		kp, ok = TestKeyRing.DfinityKeys[key]
 	} else {
 		return nil, fmt.Errorf("unrecognized chain type: %s", chainType)
 	}
